@@ -1,4 +1,4 @@
-package com.cadiducho.cservidoresmc.model;
+package com.cadiducho.cservidoresmc.web.model;
 
 import com.google.gson.annotations.SerializedName;
 

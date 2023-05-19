@@ -1,4 +1,4 @@
-package com.cadiducho.cservidoresmc.model.updater;
+package com.cadiducho.cservidoresmc.web.model.updater;
 
 import lombok.Getter;
 import lombok.ToString;

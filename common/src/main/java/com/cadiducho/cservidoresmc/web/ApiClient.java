@@ -1,9 +1,10 @@
-package com.cadiducho.cservidoresmc;
+package com.cadiducho.cservidoresmc.web;
 
 import com.cadiducho.cservidoresmc.api.CSPlugin;
-import com.cadiducho.cservidoresmc.model.ServerStats;
-import com.cadiducho.cservidoresmc.model.VoteResponse;
+import com.cadiducho.cservidoresmc.web.model.ServerStats;
+import com.cadiducho.cservidoresmc.web.model.VoteResponse;
 import com.google.gson.Gson;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -11,21 +12,33 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 public class ApiClient {
 
-    private final String API_URL = "https://40servidoresmc.es/api2.php?clave=";
+    private static final String API_URL = "https://40servidoresmc.es/api2.php?clave=";
+
     private final CSPlugin plugin;
     private final Gson gson;
 
+    @Getter
+    private ServerStats lastStats = new ServerStats();
+    @Getter
+    private final Map<String, VoteResponse> savedResponses = new HashMap<>();
+
     public String apiKey() {
-        return plugin.getCSConfiguration().getString("clave");
+        return plugin.getConfiguration().getString("vote.client.key");
     }
 
     public int timeOut() {
-        return plugin.getCSConfiguration().getInt("readTimeOut");
+        return plugin.getConfiguration().getInt("vote.client.readTimeOut");
+    }
+
+    public VoteResponse getSavedResponse(String name) {
+        return savedResponses.getOrDefault(name, VoteResponse.EMPTY);
     }
 
     public CompletableFuture<VoteResponse> validateVote(String player) {
@@ -36,6 +49,16 @@ public class ApiClient {
                 throw new IllegalStateException("Cannot execute API call", e);
             }
         });
+    }
+
+    public void updateServerStats() {
+        try {
+            lastStats = fetchServerStats().get();
+        } catch (Exception e) {
+            if (plugin.getLogLevel() >= 4) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public CompletableFuture<ServerStats> fetchServerStats() {

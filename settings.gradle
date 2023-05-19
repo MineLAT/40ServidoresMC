@@ -2,6 +2,5 @@ rootProject.name = '40ServidoresMC'
 
 include 'common'
 include 'bukkit'
-//include 'sponge'
 include 'sponge:api7'
-//include 'sponge:api8'
+include 'sponge:api8'

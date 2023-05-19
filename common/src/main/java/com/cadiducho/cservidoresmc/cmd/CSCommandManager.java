@@ -49,22 +49,22 @@ public class CSCommandManager {
         if (command.isPresent()) {
             CSCommand cmd = command.get();
             if (!cmd.isAuthorized(sender)) {
-                sender.sendMessageWithTag("&cNo tienes permiso para usar este comando");
+                sender.sendLang("command.result.not-perm", cmd.getPermission());
                 return;
             }
             CSCommand.CommandResult result = cmd.execute(plugin, sender, label, args);
             switch (result) {
                 case COOLDOWN:
-                    sender.sendMessageWithTag("&6No puedes ejecutar este comando tantas veces seguidas!");
+                    sender.sendLang("command.result.cooldown", cmd.getPermission());
                     break;
                 case NO_PERMISSION:
-                    sender.sendMessageWithTag("&cNo tienes permiso para usar este comando");
+                    sender.sendLang("command.result.not-perm", cmd.getPermission());
                     break;
                 case ERROR:
-                    sender.sendMessageWithTag("&cHa ocurrido un error inesperado");
+                    sender.sendLang("command.result.error", cmd.getPermission());
                     break;
                 case ONLY_PLAYER:
-                    sender.sendMessageWithTag("&cEste comando sólo puede ser ejecutado por usuarios");
+                    sender.sendLang("command.result.only-player", cmd.getPermission());
                     break;
             }
         }

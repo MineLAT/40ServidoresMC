@@ -1,57 +1,60 @@
 package com.cadiducho.cservidoresmc.api;
 
-import com.cadiducho.cservidoresmc.ApiClient;
-import com.cadiducho.cservidoresmc.Updater;
-import com.cadiducho.cservidoresmc.config.CSConfiguration;
+import com.cadiducho.cservidoresmc.web.ApiClient;
+import com.cadiducho.cservidoresmc.web.Updater;
+import com.cadiducho.cservidoresmc.util.Strings;
+import com.cadiducho.cservidoresmc.vote.VoteReward;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 public interface CSPlugin {
 
-    void log(String text);
-    void logError(String text);
+    String PLUGIN_VERSION = "4.0";
+    int CONFIG_VERSION = 3;
 
-    default boolean isDebug() {
-        return getCSConfiguration().getBoolean("debug");
-    }
+    /**
+     * Method to reload the plugin
+     */
+    void onReload();
 
-    default void debugLog(String s) {
-        if (isDebug()){
-            log("[Debug] " + s);
+    /**
+     * Log message to console after check if level is applicable
+     * @param level The log level
+     * @param msg   The message to log
+     */
+    default void log(int level, String msg) {
+        if (getLogLevel() >= level) {
+            logMessage(level, msg);
         }
     }
 
     /**
-     * Registrar los comandos en la plataforma deseada
+     * Log message to console
+     * @param level The log level
+     * @param msg   The message to log
      */
-    void registerCommands();
+    void logMessage(int level, String msg);
 
     /**
      * Datos de configuración del plugin, con implementación para cada tipo de servidor
      * @return config
      */
-    CSConfiguration getCSConfiguration();
+    CSConfiguration getConfiguration();
 
     /**
-     * Obtener la versión de la configuración
-     * @return la versión de la configuración
+     * Get current log level
+     * @return a log level
      */
-    default int configVersion() {
+    default int getLogLevel() {
         return 3;
     }
 
     /**
-     * Comprobar si la configuración tiene una clave válida
+     * Get vote rewards
+     * @return a list with vote rewards
      */
-    default void checkDefaultKey() {
-        if (getCSConfiguration().getInt("configVer", 0) != configVersion()) {
-            logError("¡Tu configuración es de una versión más antigua a la de este plugin!");
-            logError("Actualiza la configuración para evitar errores.");
-        }
-        if (getCSConfiguration().getString("clave", "key").equalsIgnoreCase("key")) {
-            logError("¡Atención! La clave del servidor no está correctamente configurada");
-            logError("Accede a la configuración y modifica 'clave' con el valor correcto obtenido en la página web.");
-            logError("Este error hará que el plugin no funcione correctamente.");
-        }
-    }
+    List<VoteReward> getVoteRewards();
 
     /**
      * Instancia del cliente HTTP para la API
@@ -66,10 +69,10 @@ public interface CSPlugin {
     Updater getUpdater();
 
     /**
-     * La versión del plugin en String, por ejemplo "3.0"
-     * @return versión
+     * Perform the provided action to each online player adapted to command sender
+     * @param consumer the action to run for every player.
      */
-    String getPluginVersion();
+    void forEachOnlinePlayer(Consumer<CSCommandSender> consumer);
 
     /**
      * Ejecutar un comando deseado por la consola del servidor
@@ -78,8 +81,26 @@ public interface CSPlugin {
     void dispatchCommand(String command);
 
     /**
-     * Enviar un mensaje a todos los usuarios
-     * @param message el mensaje
+     * Colorize the provided text
+     * @param text The text to color
+     * @return     a colored text
      */
-    void broadcastMessage(String message);
+    default String color(String text) {
+        return Strings.rgb(text);
+    }
+
+    /**
+     * Comprobar si la configuración tiene una clave válida
+     */
+    default void checkDefaultKey() {
+        if (getConfiguration().getInt("configVer", 0) != CONFIG_VERSION) {
+            log(1, "¡Tu configuración es de una versión más antigua a la de este plugin!");
+            log(1, "Actualiza la configuración para evitar errores.");
+        }
+        if (getConfiguration().getString("vote.client.key", "key").equalsIgnoreCase("key")) {
+            log(1, "¡Atención! La clave del servidor no está correctamente configurada");
+            log(1, "Accede a la configuración y modifica 'clave' con el valor correcto obtenido en la página web.");
+            log(1, "Este error hará que el plugin no funcione correctamente.");
+        }
+    }
 }

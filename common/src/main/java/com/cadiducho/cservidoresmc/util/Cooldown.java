@@ -1,4 +1,4 @@
-package com.cadiducho.cservidoresmc;
+package com.cadiducho.cservidoresmc.util;
 
 import java.util.HashMap;
 

@@ -1,4 +1,4 @@
-package com.cadiducho.cservidoresmc;
+package com.cadiducho.cservidoresmc.sponge;
 
 import com.cadiducho.cservidoresmc.api.CSCommandSender;
 import com.cadiducho.cservidoresmc.api.CSConsoleSender;
@@ -7,8 +7,7 @@ import com.cadiducho.cservidoresmc.cmd.CSCommandManager;
 import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.source.CommandBlockSource;
-import org.spongepowered.api.command.source.ConsoleSource;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -30,10 +29,10 @@ public class SpongeCommandExecutor implements CommandCallable {
     @Override
     public CommandResult process(CommandSource source, String args) {
         CSCommandSender csCommandSender;
-        if (source instanceof ConsoleSource || source instanceof CommandBlockSource) {
-            csCommandSender = new CSConsoleSender(commandManager.getPlugin());
+        if (source instanceof Player) {
+            csCommandSender = new SpongeCommandSender((Player) source, (SpongePlugin) commandManager.getPlugin());
         } else {
-            csCommandSender = new SpongeCommandSender(source, commandManager.getPlugin());
+            csCommandSender = new CSConsoleSender(commandManager.getPlugin());
         }
         commandManager.executeCommand(csCommandSender, command.getName(), Arrays.asList(args.split(" ")));
         return CommandResult.success();
@@ -41,7 +40,12 @@ public class SpongeCommandExecutor implements CommandCallable {
 
     @Override
     public List<String> getSuggestions(CommandSource source, String args, Location<World> location) {
-        CSCommandSender sender = new SpongeCommandSender(source, commandManager.getPlugin());
+        CSCommandSender sender;
+        if (source instanceof Player) {
+            sender = new SpongeCommandSender((Player) source, (SpongePlugin) commandManager.getPlugin());
+        } else {
+            sender = new CSConsoleSender(commandManager.getPlugin());
+        }
         return command.tabCompleteCommand(sender, Arrays.asList(args.split(" ")));
     }
 

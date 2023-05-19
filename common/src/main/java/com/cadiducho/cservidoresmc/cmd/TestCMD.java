@@ -2,6 +2,8 @@ package com.cadiducho.cservidoresmc.cmd;
 
 import com.cadiducho.cservidoresmc.api.CSCommandSender;
 import com.cadiducho.cservidoresmc.api.CSPlugin;
+import com.cadiducho.cservidoresmc.util.Task;
+import com.cadiducho.cservidoresmc.vote.VoteReward;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,13 +26,12 @@ public class TestCMD extends CSCommand {
             return CommandResult.ONLY_PLAYER;
         }
 
-        sender.sendMessageWithTag("&bPlataforma de test para 40ServidoresMC:");
-        sender.sendMessage("");
-        sender.sendMessageWithTag(plugin.getCSConfiguration().getString("mensaje"));
-        for (String cmds : plugin.getCSConfiguration().customCommandsList()) {
-            String comando = cmds.replace("{0}", sender.getName());
-            plugin.dispatchCommand(comando);
-        }
+        Task.async(() -> {
+            sender.sendLang("command.test");
+            for (VoteReward reward : plugin.getVoteRewards()) {
+                reward.giveTo(sender);
+            }
+        });
 
         return CommandResult.SUCCESS;
     }

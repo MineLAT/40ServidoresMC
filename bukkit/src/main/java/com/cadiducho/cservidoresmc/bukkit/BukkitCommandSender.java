@@ -1,37 +1,71 @@
 package com.cadiducho.cservidoresmc.bukkit;
 
 import com.cadiducho.cservidoresmc.api.CSCommandSender;
-import com.cadiducho.cservidoresmc.api.CSPlugin;
 import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.ChatColor;
+import me.clip.placeholderapi.PlaceholderAPI;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class BukkitCommandSender implements CSCommandSender {
 
-    private final CommandSender commandSender;
-
-    private final CSPlugin plugin;
-
-    @Override
-    public String TAG() {
-        return plugin.getCSConfiguration().getTag();
-    }
-
-    @Override
-    public void sendMessage(String string) {
-        String message = ChatColor.translateAlternateColorCodes('&', string);
-        commandSender.spigot().sendMessage(TextComponent.fromLegacyText(message));
-    }
+    private final Player player;
+    private final BukkitPlugin plugin;
 
     @Override
     public String getName() {
-        return commandSender.getName();
+        return player.getName();
+    }
+
+    @Override
+    public UUID getUniqueId() {
+        return player.getUniqueId();
+    }
+
+    @Override
+    public BukkitPlugin getPlugin() {
+        return plugin;
     }
 
     @Override
     public boolean hasPermission(String permission) {
-        return commandSender.hasPermission(permission);
+        return player.hasPermission(permission);
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        player.sendMessage(plugin.color(message));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        if (BukkitPlugin.SERVER_VERSION <= 8) {
+            player.sendTitle(plugin.color(title), plugin.color(subtitle));
+        } else {
+            player.sendTitle(plugin.color(title), plugin.color(subtitle), fadeIn, stay, fadeOut);
+        }
+    }
+
+    @Override
+    public void sendActionbar(String text) {
+        if (BukkitPlugin.SPIGOT_SERVER) {
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(plugin.color(text)));
+        }
+    }
+
+    @Override
+    public String parse(String text, Object... args) {
+        final String result = CSCommandSender.super.parse(text, args);
+        if (result == null) {
+            return null;
+        }
+        if (plugin.isPapiEnabled()) {
+            return PlaceholderAPI.setPlaceholders(player, text);
+        }
+        return result;
     }
 }

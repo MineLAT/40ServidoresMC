@@ -1,6 +1,4 @@
-package com.cadiducho.cservidoresmc.config;
-
-import com.cadiducho.cservidoresmc.api.CSPlugin;
+package com.cadiducho.cservidoresmc.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,19 +16,18 @@ public interface CSConfiguration {
     void reload();
 
     /**
-     * Devuelve la lista de comandos custom
-     * @return Lista de comandos custom
+     * Get the object at provided path
+     * @param path The path to lookup
+     * @return     an object or null
      */
-    default List<String> customCommandsList() {
-        return getStringList("comandosCustom");
-    }
+    Object get(String path);
 
     /**
      * Devuelve el tag del plugin para votación
      * @return El tag del plugin
      */
     default String getTag() {
-        return getString("tag", "&8[&b40ServidoresMC&8]");
+        return getString("messages.tag", "&8[&b40ServidoresMC&8]");
     }
 
     /**
@@ -117,6 +114,19 @@ public interface CSConfiguration {
      * @return El valor de la clave en la configuración
      */
     Map<String, String> getStringMap(String path, Map<String, String> def);
+
+    /**
+     * Get message from configuration
+     * @param path Path to message
+     * @return     A list containing the message
+     */
+    default List<String> getMessage(String path) {
+        final List<String> list = getStringList("messages." + path);
+        if (list.size() == 1) {
+            list.set(0, getTag() + list.get(0));
+        }
+        return list;
+    }
 
     /**
      * Devuelve el plugin de CServidoresMC

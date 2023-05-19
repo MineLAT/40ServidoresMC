@@ -1,9 +1,9 @@
-package com.cadiducho.cservidoresmc;
+package com.cadiducho.cservidoresmc.web;
 
 import com.cadiducho.cservidoresmc.api.CSCommandSender;
 import com.cadiducho.cservidoresmc.api.CSConsoleSender;
 import com.cadiducho.cservidoresmc.api.CSPlugin;
-import com.cadiducho.cservidoresmc.model.updater.UpdaterInfo;
+import com.cadiducho.cservidoresmc.web.model.updater.UpdaterInfo;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -29,10 +29,6 @@ public class Updater {
         versionInstalada = vInstalada;
         versionMinecraft = vMinecraft;
     }
-    
-    private final String ERROR = "Error obteniendo la versión.";
-    private final String UPDATED = "Versión actualizada";
-    private final String NEW_VERSION = "Versión desactualizada. Nueva versión: %s. Changelog: %s. Descarga en: %s";
 
     /**
      * Comprobar si hay nueva versión
@@ -52,7 +48,7 @@ public class Updater {
             // Se hace al iniciar el plugin
             sender = new CSConsoleSender(plugin);
         }
-        plugin.debugLog("Buscando nueva versión para Minecraft " + versionMinecraft + "...");
+        plugin.log(4, "Buscando nueva versión para Minecraft " + versionMinecraft + "...");
 
         final CSCommandSender finalSender = sender;
         fetchUpdate().thenAccept((UpdaterInfo updaterInfo) -> {
@@ -64,17 +60,16 @@ public class Updater {
                 // Si existe versión recomendada para esa versión de minecraft, pero no es la que está instalada, avisar
                 if (!updaterVersion.equals(versionInstalada)) {
                     String link = String.format("https://github.com/Cadiducho/40ServidoresMC/releases/tag/v%s", updaterVersion);
-                    String format = String.format(NEW_VERSION, updaterVersion, updateDescription, link);
-                    finalSender.sendMessageWithTag(format);
+                    finalSender.sendLang("updater.new-version", updaterVersion, updateDescription, link);
                 } else {
-                    finalSender.sendMessageWithTag(UPDATED);
+                    finalSender.sendLang("updater.updated");
                 }
             } else if (confirmation) {
-                finalSender.sendMessageWithTag("No hay versión más moderna recomendada para tu versión de Minecraft.");
+                finalSender.sendLang("updater.any-version");
             }
         }).exceptionally(e -> {
-            plugin.log(ERROR);
-            plugin.debugLog("Causa: " + e.getMessage());
+            plugin.log(1, plugin.getConfiguration().getString("messages.updater.error"));
+            plugin.log(4, "Causa: " + e.getMessage());
             return null;
         });
     }

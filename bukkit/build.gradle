@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id "com.github.johnrengelman.shadow" version "7.1.0"
-    id "io.freefair.lombok" version "6.4.3"
+    id 'com.github.johnrengelman.shadow'
+    id 'io.freefair.lombok'
 }
 
 repositories {
@@ -12,6 +12,7 @@ repositories {
 dependencies {
     implementation project(':common')
     implementation 'org.bstats:bstats-bukkit:3.0.0'
+
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.9'
 }
@@ -21,8 +22,8 @@ shadowJar {
     archiveClassifier.set('Bukkit')
     archiveVersion.set(version)
 
-    relocate 'org.bstats', 'com.cadiducho.cservidoresmc.lib.bstats'
-    relocate 'ninja.leaping.configurate', 'com.cadiducho.cservidoresmc.lib.configurate'
+    relocate 'org.bstats', project.group + '.lib.bstats'
+    relocate 'ninja.leaping.configurate', project.group + '.lib.configurate'
 }
 
 artifacts {

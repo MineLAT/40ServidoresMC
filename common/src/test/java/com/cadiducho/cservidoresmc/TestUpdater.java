@@ -1,6 +1,6 @@
 package com.cadiducho.cservidoresmc;
 
-import com.cadiducho.cservidoresmc.model.updater.UpdaterInfo;
+import com.cadiducho.cservidoresmc.web.model.updater.UpdaterInfo;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 

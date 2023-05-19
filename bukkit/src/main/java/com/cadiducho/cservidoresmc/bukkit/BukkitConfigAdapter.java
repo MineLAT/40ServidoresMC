@@ -1,7 +1,7 @@
 package com.cadiducho.cservidoresmc.bukkit;
 
 import com.cadiducho.cservidoresmc.api.CSPlugin;
-import com.cadiducho.cservidoresmc.config.CSConfiguration;
+import com.cadiducho.cservidoresmc.api.CSConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BukkitConfigurationAdapter implements CSConfiguration {
+public class BukkitConfigAdapter implements CSConfiguration {
     private final CSPlugin plugin;
     private final File file;
     private YamlConfiguration configuration;
 
-    public BukkitConfigurationAdapter(CSPlugin plugin, File file) {
+    public BukkitConfigAdapter(CSPlugin plugin, File file) {
         this.plugin = plugin;
         this.file = file;
         reload();
@@ -24,6 +24,11 @@ public class BukkitConfigurationAdapter implements CSConfiguration {
     @Override
     public void reload() {
         this.configuration = YamlConfiguration.loadConfiguration(this.file);
+    }
+
+    @Override
+    public Object get(String path) {
+        return configuration.get(path);
     }
 
     @Override

@@ -1,0 +1,51 @@
+configVer: 4
+
+plugin:
+  log-level: 3
+
+vote:
+  client:
+    key: key
+    readTimeOut: 5000
+    update: 240 # Seconds
+  reward:
+    - broadcast:
+        - '&aGracias a {0} por votarnos!'
+        - 'El ya ha obtenido su premio, usa &2/voto40 &ay obten el tuyo'
+    - 'message: &6Gracias por votarnos! Aqui tienes tu premio:'
+    - 'command: money add {0} 10'
+
+messages:
+  tag: "&8[&b40ServidoresMC&8]"
+  updater:
+    error: 'Error obteniendo la versión.'
+    updated: 'Versión actualizada'
+    new-version: 'Versión desactualizada. Nueva versión: {0}. Changelog: {1}. Descarga en: {2}'
+    any-version: 'No hay versión más moderna recomendada para tu versión de Minecraft.'
+  command:
+    result:
+      not-perm: '&cNo tienes permiso para usar este comando'
+      cooldown: '&6No puedes ejecutar este comando tantas veces seguidas!'
+      error: '&cHa ocurrido un error inesperado'
+      only-player: '&cEste comando sólo puede ser ejecutado por usuarios'
+      bad-password: '&cClave incorrecta. Entra en &bhttps://40servidoresmc.es/miservidor.php &cy cambia esta.'
+      exception: '&cHa ocurrido una excepción. Revisa la consola o avisa a un administrador'
+    reload:
+      - '&aPlugin recargado correctamente'
+      - '&aFuncionando la versión {0}'
+    stats:
+      info:
+        - '&9==> &7{0} &festá en el TOP &a{1}'
+        - '&bVotos hoy: &6{2}'
+        - '&bVotos premiados hoy: &6{3}'
+        - '&bVotos semanales: &6{4}'
+        - '&bVotos premiados semanales: &6{5}'
+      last-votes: '&bÚltimos 20 votos: {0}.'
+    test:
+      - '&bPlataforma de test para 40ServidoresMC:'
+      - ' '
+    vote:
+      looking: '&7Obteniendo voto...'
+      not-voted: '&6No has votado hoy! Puedes hacerlo en &a{0}'
+      already-voted: '&aGracias por votar, pero ya has obtenido tu premio!'
+      error: '&7Ha ocurrido un error. Prueba más tarde o avisa a un adminsitrador'

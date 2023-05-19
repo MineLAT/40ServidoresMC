@@ -1,10 +1,11 @@
-package com.cadiducho.cservidoresmc.config;
-
+package com.cadiducho.cservidoresmc.sponge;
 
 import com.cadiducho.cservidoresmc.api.CSPlugin;
+import com.cadiducho.cservidoresmc.api.CSConfiguration;
 import com.google.common.base.Splitter;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,22 +14,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Configuración general, abstraída independientemente de su implementación
- */
-public abstract class ConfigurateConfigAdapter implements CSConfiguration {
+public class SpongeConfigAdapter implements CSConfiguration {
 
     private final CSPlugin plugin;
     private final Path path;
     private ConfigurationNode root;
 
-    public ConfigurateConfigAdapter(CSPlugin plugin, Path path) {
+    public SpongeConfigAdapter(CSPlugin plugin, Path path) {
         this.plugin = plugin;
         this.path = path;
         reload();
     }
 
-    protected abstract ConfigurationLoader<? extends ConfigurationNode> createLoader(Path path);
+    protected ConfigurationLoader<? extends ConfigurationNode> createLoader(Path path) {
+        return YAMLConfigurationLoader.builder().setPath(path).build();
+    }
 
     @Override
     public void reload() {
@@ -46,6 +46,11 @@ public abstract class ConfigurateConfigAdapter implements CSConfiguration {
         }
 
         return this.root.getNode(Splitter.on('.').splitToList(path).toArray());
+    }
+
+    @Override
+    public Object get(String path) {
+        return resolvePath(path).getValue();
     }
 
     @Override
