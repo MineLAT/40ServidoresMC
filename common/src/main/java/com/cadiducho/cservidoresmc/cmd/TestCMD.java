@@ -29,7 +29,7 @@ public class TestCMD extends CSCommand {
         Task.async(() -> {
             sender.sendLang("command.test");
             for (VoteReward reward : plugin.getVoteRewards()) {
-                reward.giveTo(sender);
+                reward.giveTo(sender, sender.getName(), sender.getUniqueId());
             }
         });
 

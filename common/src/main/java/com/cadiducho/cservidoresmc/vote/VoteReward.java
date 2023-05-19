@@ -97,7 +97,7 @@ public abstract class VoteReward {
 
         @Override
         public void giveTo(CSCommandSender sender, Object... args) {
-            final List<String> message = sender.parse(list);
+            final List<String> message = sender.parse(list, args);
             sender.getPlugin().forEachOnlinePlayer(player -> player.sendMessage(message));
         }
     }

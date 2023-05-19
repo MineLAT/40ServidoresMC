@@ -46,7 +46,7 @@ public class VoteCMD extends CSCommand {
                     break;
                 case SUCCESS:
                     for (VoteReward reward : plugin.getVoteRewards()) {
-                        reward.giveTo(sender);
+                        reward.giveTo(sender, sender.getName(), sender.getUniqueId());
                     }
                     break;
                 case ALREADY_VOTED:
