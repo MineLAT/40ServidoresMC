@@ -1,11 +1,10 @@
 plugins {
-  id 'java-library'
   id "io.freefair.lombok" version "6.4.3"
 }
 
 dependencies {
-  api 'com.google.guava:guava:23.0'
-  api 'com.google.code.gson:gson:2.9.0'
+  compileOnly 'com.google.guava:guava:23.0'
+  compileOnly 'com.google.code.gson:gson:2.9.0'
 
   testImplementation(platform('org.junit:junit-bom:5.7.0'))
   testImplementation('org.junit.jupiter:junit-jupiter')

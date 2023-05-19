@@ -23,7 +23,6 @@ shadowJar {
     archiveVersion.set(version)
 
     relocate 'org.bstats', project.group + '.lib.bstats'
-    relocate 'ninja.leaping.configurate', project.group + '.lib.configurate'
 }
 
 artifacts {
