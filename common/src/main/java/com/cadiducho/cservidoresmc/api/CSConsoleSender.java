@@ -39,6 +39,6 @@ public class CSConsoleSender implements CSCommandSender {
 
     @Override
     public void sendMessage(String message) {
-        plugin.logMessage(3, message);
+        plugin.logMessage(5, message);
     }
 }

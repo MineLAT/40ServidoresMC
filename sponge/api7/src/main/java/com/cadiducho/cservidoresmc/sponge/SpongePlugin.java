@@ -67,6 +67,7 @@ public class SpongePlugin implements CSPlugin {
         this.configuration = new SpongeConfigAdapter(this, resolveConfig());
         logLevel = configuration.getInt("plugin.log-level", 3);
         voteRewards = VoteReward.of(configuration.get("vote.reward"));
+        log(3, "Loaded " + voteRewards.size() + " vote reward" + (voteRewards.size() != 1 ? "s" : ""));
         checkDefaultKey();
     }
 
@@ -87,8 +88,9 @@ public class SpongePlugin implements CSPlugin {
     public void onReload() {
         configuration.reload();
         logLevel = configuration.getInt("plugin.log-level", 3);
+        voteRewards = VoteReward.of(configuration.get("vote.reward"));
+        log(3, "Loaded " + voteRewards.size() + " vote reward" + (voteRewards.size() != 1 ? "s" : ""));
         checkDefaultKey();
-        registerCommands();
     }
 
     @Override
@@ -105,6 +107,9 @@ public class SpongePlugin implements CSPlugin {
                 break;
             case 4:
                 logger.debug(msg);
+                break;
+            case 5:
+                Sponge.getServer().getConsole().sendMessage(colorText(msg));
                 break;
             default:
                 break;

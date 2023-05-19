@@ -70,9 +70,11 @@ public class BukkitPlugin extends JavaPlugin implements CSPlugin {
         instance = this;
 
         // Load config parameters
-        configuration = new BukkitConfigAdapter(instance, new File(getDataFolder() + File.separator + "config.yml"));
+        saveResource("config.yml", false);
+        configuration = new BukkitConfigAdapter(instance, new File(getDataFolder(), "config.yml"));
         logLevel = configuration.getInt("plugin.log-level", 3);
         voteRewards = VoteReward.of(configuration.get("vote.reward"));
+        log(3, "Loaded " + voteRewards.size() + " vote reward" + (voteRewards.size() != 1 ? "s" : ""));
         checkDefaultKey();
 
         // Load client
@@ -106,8 +108,9 @@ public class BukkitPlugin extends JavaPlugin implements CSPlugin {
     public void onReload() {
         configuration.reload();
         logLevel = configuration.getInt("plugin.log-level", 3);
+        voteRewards = VoteReward.of(configuration.get("vote.reward"));
+        log(3, "Loaded " + voteRewards.size() + " vote reward" + (voteRewards.size() != 1 ? "s" : ""));
         checkDefaultKey();
-        registerCommands();
     }
 
     @Override
@@ -121,7 +124,10 @@ public class BukkitPlugin extends JavaPlugin implements CSPlugin {
                 break;
             case 3:
             case 4:
-                getLogger().info(color(msg));
+                getLogger().info(msg);
+                break;
+            case 5:
+                Bukkit.getConsoleSender().sendMessage(color(msg));
                 break;
             default:
                 break;
