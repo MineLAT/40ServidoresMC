@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 public interface CSPlugin {
 
     String PLUGIN_VERSION = "4.0";
-    int CONFIG_VERSION = 3;
+    int CONFIG_VERSION = 4;
 
     /**
      * Method to reload the plugin
