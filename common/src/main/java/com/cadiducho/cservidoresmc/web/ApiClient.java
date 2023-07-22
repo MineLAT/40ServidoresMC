@@ -19,8 +19,6 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class ApiClient {
 
-    private static final String API_URL = "https://40servidoresmc.es/api2.php?clave=";
-
     private final CSPlugin plugin;
     private final Gson gson;
 
@@ -31,6 +29,14 @@ public class ApiClient {
 
     public String apiKey() {
         return plugin.getConfiguration().getString("vote.client.key");
+    }
+
+    public String playerUrl() {
+        return plugin.getConfiguration().getString("vote.client.url-format.player");
+    }
+
+    public String serverUrl() {
+        return plugin.getConfiguration().getString("vote.client.url-format.server");
     }
 
     public int timeOut() {
@@ -44,7 +50,7 @@ public class ApiClient {
     public CompletableFuture<VoteResponse> validateVote(String player) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return fetchData("&nombre=" + player, "GET", VoteResponse.class);
+                return fetchData(playerUrl().replace("{player}", player), "GET", VoteResponse.class);
             } catch (IOException e) {
                 throw new IllegalStateException("Cannot execute API call", e);
             }
@@ -64,7 +70,7 @@ public class ApiClient {
     public CompletableFuture<ServerStats> fetchServerStats() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return fetchData("&estadisticas=1", "GET", ServerStats.class);
+                return fetchData(serverUrl(), "GET", ServerStats.class);
             } catch (IOException e) {
                 throw new IllegalStateException("Cannot execute API call", e);
             }
@@ -73,15 +79,15 @@ public class ApiClient {
 
     /**
      * Obtener datos de la API, según unos parámetros dados, y parsearlo a un objeto
-     * @param params Parámetros HTTP de la petición
+     * @param urlFormat Formato de URL de la petición
      * @param method Método HTTP
      * @param type Clase a la que convertir los datos recibidos
      * @param <T> Tipo que retornará
      * @return El objeto con los datos solicitados a la API
      * @throws IOException Si falla al parsear o al conectarse a la API
      */
-    private <T> T fetchData(String params, String method, Class<T> type) throws IOException {
-        URL url = new URL(API_URL + apiKey() + params);
+    private <T> T fetchData(String urlFormat, String method, Class<T> type) throws IOException {
+        URL url = new URL(urlFormat.replace("{key}", apiKey()));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod(method);
         connection.setReadTimeout(timeOut());

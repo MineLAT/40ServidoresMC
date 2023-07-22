@@ -6,6 +6,9 @@ plugin:
 vote:
   client:
     key: key
+    url-format:
+      player: 'https://40servidoresmc.es/api2.php?clave={key}&nombre={player}&estadisticas=0'
+      server: 'https://40servidoresmc.es/api2.php?clave={key}&nombre=40Servidores&estadisticas=1'
     readTimeOut: 5000
     update: 240 # Seconds
   reward:
