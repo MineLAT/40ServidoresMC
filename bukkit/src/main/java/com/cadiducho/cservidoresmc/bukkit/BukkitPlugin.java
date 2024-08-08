@@ -35,8 +35,8 @@ public class BukkitPlugin extends JavaPlugin implements CSPlugin {
     public static final boolean SPIGOT_SERVER;
 
     static {
-        final String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-        SERVER_VERSION = Integer.parseInt(version.split("_")[1]);
+        final String version = Bukkit.getServer().getBukkitVersion().split("\\.")[1];
+        SERVER_VERSION = Integer.parseInt(version.split("[-_]")[0]);
         boolean spigot = false;
         try {
             Class.forName("org.spigotmc.SpigotConfig");
